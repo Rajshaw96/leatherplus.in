@@ -1,25 +1,19 @@
-# CakePHP 3
+# Log files
+*.log
+error.log
+access.log
 
-/vendor/*
-/config/app.php
+# Environment/config files
+.env
+.env.*
 
-/tmp/cache/models/*
-!/tmp/cache/models/empty
-/tmp/cache/persistent/*
-!/tmp/cache/persistent/empty
-/tmp/cache/views/*
-!/tmp/cache/views/empty
-/tmp/sessions/*
-!/tmp/sessions/empty
-/tmp/tests/*
-!/tmp/tests/empty
+# IDE and system files
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
 
-/logs/*
-!/logs/empty
-
-# CakePHP 2
-
-/app/tmp/*
-/app/Config/core.php
-/app/Config/database.php
-/vendors/*
+# Temporary/backup files
+*.bak
+*.tmp

@@ -1,0 +1,5 @@
+[19-Jul-2024 10:38:35 UTC] PHP Warning:  mysqli_num_rows() expects parameter 1 to be mysqli_result, bool given in /home/eygv0nnt3uol/public_html/leatherplus.in/lib/database/databaseops.php on line 37
+[19-Jul-2024 10:40:45 UTC] PHP Warning:  mysqli_num_rows() expects parameter 1 to be mysqli_result, bool given in /home/eygv0nnt3uol/public_html/leatherplus.in/lib/database/databaseops.php on line 37
+[19-Jul-2024 10:41:34 UTC] PHP Warning:  mysqli_num_rows() expects parameter 1 to be mysqli_result, bool given in /home/eygv0nnt3uol/public_html/leatherplus.in/lib/database/databaseops.php on line 37
+[19-Jul-2024 10:42:33 UTC] PHP Warning:  mysqli_num_rows() expects parameter 1 to be mysqli_result, bool given in /home/eygv0nnt3uol/public_html/leatherplus.in/lib/database/databaseops.php on line 37
+[09-Aug-2024 09:03:08 UTC] PHP Warning:  mysqli_num_rows() expects parameter 1 to be mysqli_result, bool given in /home/eygv0nnt3uol/public_html/leatherplus.in/lib/database/databaseops.php on line 37
