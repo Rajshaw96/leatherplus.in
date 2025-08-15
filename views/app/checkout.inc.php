@@ -127,6 +127,17 @@ $phone = $_SESSION['user']['phone'] ?? "";
                             <span>Total:</span>
                             <span>₹<?= $total ?></span>
                         </div>
+
+                        <!-- Payment Mode Selection -->
+                        <div class="mb-3 mt-3">
+                            <label class="form-label">Payment Mode</label>
+                            <select name="payment_mode" class="form-control" required>
+                                <option value="prepaid">Prepaid (Online Payment)</option>
+                                <?php if ($_POST['country'] === 'india' || !isset($_POST['country'])): ?>
+                                    <option value="cod">Cash on Delivery (India only)</option>
+                                <?php endif; ?>
+                            </select>
+                        </div>
                     </div>
                     <button type="submit" class="btn btn-dark w-100">Place Order</button>
                 </div>

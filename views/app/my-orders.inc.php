@@ -135,7 +135,9 @@
                                                 </td>
                                                 <td>
                                                     <?php
-                                                    echo $myorders['order_paystatus'] == 1 ? '<span class="text-success fw-bold">Paid</span>' : '<span class="text-danger fw-bold">Failed</span>';
+                                                    echo $myorders['order_paystatus'] == 1 ? '<span class="text-success fw-bold">Paid</span>' 
+                                                        : ($myorders['order_paystatus'] == 2 ? '<span style="color:#59300e" class="fw-bold">COD</span>' 
+                                                        : '<span class="text-danger fw-bold">Failed</span>');
                                                     ?>
                                                 </td>
                                             </tr>

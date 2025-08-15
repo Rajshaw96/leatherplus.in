@@ -32,4 +32,13 @@ require_once(__DIR__ . '/../database/databaseops.php');
 $url = new UrlHelpers();
 $database = new DatabaseOps();
 $connStatus = $database->createConnection();
+
+// Define Shipway credentials with protection against redefinition
+if (!defined('SHIPWAY_EMAIL')) {
+    define('SHIPWAY_EMAIL', 'info@leatherplus.in');
+}
+if (!defined('SHIPWAY_LICENSE_KEY')) {
+    define('SHIPWAY_LICENSE_KEY', 'y983VSB2Tn34tW3xv0u4687rVk1keKq8'); 
+}
+
 ?>

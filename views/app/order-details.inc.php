@@ -84,6 +84,10 @@ if (!empty($order['order_details'])) {
             margin-top: 155px !important;
             margin-bottom: 30px;
         }
+        .card img {
+            width: 15%;
+            object-fit: cover;
+        }
     </style>
 </head>
 
@@ -92,7 +96,7 @@ if (!empty($order['order_details'])) {
 
     <div class="container giving-margin">
         <div class="row">
-            <div class="col-lg-8 offset-lg-2">
+            <div class="col-lg-12">
                 <div class="card shadow-sm">
                     <div class="card-header bg-dark text-white">
                         <h5 class="mb-0">Order Details</h5>
@@ -104,7 +108,9 @@ if (!empty($order['order_details'])) {
                                 class="order-status <?= strtolower($order_status) == 'completed' ? 'status-completed' : (strtolower($order_status) == 'failed' ? 'status-failed' : 'status-pending') ?>"><?= ucfirst($order_status) ?></span>
                         </p>
                         <p><strong>Payment:</strong>
-                            <?= $order_paystatus == 1 ? '<span class="text-success fw-bold">Paid</span>' : '<span class="text-danger fw-bold">Failed</span>' ?>
+                            <?= $order_paystatus == 1 ? '<span style="color: #59300e; font-weight: bold;">Paid</span>' 
+                                : ($order_paystatus == 2 ? '<span style="color: #59300e; font-weight: bold;">COD</span>' 
+                                : '<span style="color: #59300e; font-weight: bold;">Failed</span>') ?>
                         </p>
                         <hr>
                         <div class="table-responsive">
@@ -131,10 +137,10 @@ if (!empty($order['order_details'])) {
                                             $subtotal = $qty * $unit_price;
                                             ?>
                                             <tr>
-                                                <td>
-                                                    <div class="d-flex align-items-center">
+                                                <td style="width: 300px;">
+                                                    <div class="d-flex">
                                                         <img src="<?= $url->baseUrl('uploads/product-images/' . $product['prod_featuredimage']) ?>"
-                                                            alt="" width="60" class="me-2">
+                                                            alt="product-images" class="me-2">
                                                         <div>
                                                             <?= htmlspecialchars($product['prod_title']) ?><br>
                                                             <small><?= htmlspecialchars($variation) ?></small>
