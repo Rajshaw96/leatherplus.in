@@ -75,16 +75,21 @@ while ($row = $result->fetch_assoc()) {
         <p class="price">
           <?php
           $regularFormatted = number_format((float) $regularprice, 1);
+
           if ($saleprice > 0) {
+            // Show regular with strike + sale price
             $saleFormatted = number_format((float) $saleprice, 1);
-            echo "<del>₹$regularFormatted</del><span style='color: #5c2e0f;font-size:22px;margin-left:10px;'> ₹$saleFormatted </span>";
+            echo "<del>₹$regularFormatted</del>
+            <span style='color: #5c2e0f;font-size:22px;margin-left:10px;'>
+              ₹$saleFormatted
+            </span>";
           } else {
-            $adjustedSale = $regularprice - 350;
-            $adjustedSaleFormatted = number_format((float) $adjustedSale, 1);
-            echo "<del>₹$regularFormatted</del> <span style='color: #5c2e0f;font-size:22px;margin-left:10px;'>₹$adjustedSaleFormatted</span>";
+            // Show only regular price (no strike, no discount)
+            echo "<span style='color: #5c2e0f;font-size:22px;'>₹$regularFormatted</span>";
           }
           ?>
         </p>
+
 
         <?php
         $total_reviews = count($reviews);

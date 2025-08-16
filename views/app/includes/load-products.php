@@ -21,20 +21,22 @@ if ($connStatus === true) {
       $sale = (float) ($product['prod_saleprice'] ?? 0);
       $image = htmlspecialchars($product['prod_featuredimage']);
 
-      // Final price logic
-      $finalSale = ($sale && $sale > 0) ? $sale : max($regular - 350, 1);
-      $discount = round(100 - ($finalSale / $regular) * 100);
-
       $formattedRegular = number_format($regular, 1);
-      $formattedSale = number_format($finalSale, 1);
+      $formattedSale = $sale > 0 ? number_format($sale, 1) : null;
 
       $imageUrl = $url->baseUrl("uploads/product-images/" . $image);
       $productLink = $url->baseUrl("product?q=" . $product['prod_id']);
       ?>
       <div class="product-card">
         <a href="<?= $productLink ?>">
-          <div class=" badge">-<?= $discount ?>%
-          </div>
+
+          <?php if ($sale > 0 && $regular > $sale): ?>
+            <?php 
+              $discount = round(100 - ($sale / $regular) * 100);
+            ?>
+            <div class="badge">-<?= $discount ?>%</div>
+          <?php endif; ?>
+
           <img class="product-image" src="<?= $imageUrl ?>" alt="<?= $title ?>" />
           <div class="product-details">
             <div class="product-name">
@@ -42,12 +44,12 @@ if ($connStatus === true) {
             </div>
             <div class="price-rating-row">
               <div class="product-price">
-                <?php if ($finalSale < $regular) { ?>
+                <?php if ($sale > 0 && $regular > $sale): ?>
                   <strike>₹<?= $formattedRegular ?></strike>
                   <span style="font-size: 17px;font-weight:600;">₹<?= $formattedSale ?></span>
-                <?php } else { ?>
+                <?php else: ?>
                   <span style="font-size: 17px;font-weight:600;">₹<?= $formattedRegular ?></span>
-                <?php } ?>
+                <?php endif; ?>
               </div>
               <?php
               $productId = $product['prod_id'];

@@ -21,27 +21,35 @@ $camt = 0;
 $cartHtml = "";
 
 if (!empty($_SESSION['cart']) && is_array($_SESSION['cart'])) {
-  foreach ($_SESSION['cart'] as $prodId => $qty) {
+  foreach ($_SESSION['cart'] as $item) {
+    $prodId = $item['product_id'];
+    $qty    = $item['qty'];
+    $size   = $item['size'] ?? '';
+    $name   = $item['name'] ?? '';
+
     $res = $database->getData("SELECT * FROM products WHERE prod_id = '$prodId' AND prod_status = 1");
     if ($res && mysqli_num_rows($res) > 0) {
       $p = mysqli_fetch_assoc($res);
       $price = $p['prod_saleprice'] > 0 ? $p['prod_saleprice'] : $p['prod_regularprice'];
-      $img = $url->baseUrl("uploads/product-images/" . $p['prod_featuredimage']);
+      $img   = $url->baseUrl("uploads/product-images/" . $p['prod_featuredimage']);
+
       $cartHtml .= "
         <div class='cart-item'>
           <img src='$img' alt='Product'>
           <div class='flex-grow-1'>
-            <div><strong>" . htmlspecialchars($p['prod_title']) . "</strong></div>
+            <div><strong>" . htmlspecialchars($name ?: $p['prod_title']) . "</strong></div>
+            " . (!empty($size) ? "<div class='text-muted-small'>Size: " . htmlspecialchars($size) . "</div>" : "") . "
             <div class='text-muted-small'>₹$price</div>
             <div class='quantity-control'>
-              <button onclick=\"updateQty($prodId,-1)\">-</button>
+              <button onclick=\"updateQty($prodId,-1,'$size')\">-</button>
               <span>$qty</span>
-              <button onclick=\"updateQty($prodId,1)\">+</button>
+              <button onclick=\"updateQty($prodId,1,'$size')\">+</button>
             </div>
           </div>
-          <button class='remove-btn' onclick=\"removeFromCart($prodId)\">&times;</button>
+          <button class='remove-btn' onclick=\"removeFromCart($prodId,'$size')\">&times;</button>
         </div>
       ";
+
       $cqty += $qty;
       $camt += $price * $qty;
     }
@@ -54,10 +62,6 @@ if (!empty($_SESSION['cart']) && is_array($_SESSION['cart'])) {
 <div class="cart-header d-flex justify-content-between align-items-center">
   <span><i class="bi bi-cart me-2"></i>My Cart</span>
   <button class="btn-close" onclick="toggleCart()"></button>
-</div>
-
-<div class="info-banner">
-  Add products worth <strong>₹1499</strong> and get <strong>₹350 off</strong>. Use Code: <strong>LP350</strong>
 </div>
 
 <?= $cartHtml ?: "<p class='text-center text-muted my-4'>Your cart is empty</p>" ?>

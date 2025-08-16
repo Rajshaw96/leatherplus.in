@@ -16,7 +16,6 @@
     <link rel="icon" type="image/png" href="<?= $url->baseUrl("views/app/assets/images/icons/favicon.png") ?>">
     <link rel="apple-touch-icon" sizes="57x57" href="<?= $url->baseUrl("views/app/assets/images/icons/favicon.png") ?>">
     <link rel="apple-touch-icon" sizes="72x72" href="<?= $url->baseUrl("views/app/assets/images/icons/favicon.png") ?>">
-
 </head>
 
 <body>
@@ -44,7 +43,6 @@
                 </div>
 
                 <?php
-
                 $cqty = 0;
                 $camt = 0;
                 $hasItems = !empty($_SESSION['cart']) && is_array($_SESSION['cart']);
@@ -56,6 +54,7 @@
                             <thead>
                                 <tr>
                                     <th>Product</th>
+                                    <th>Size</th>
                                     <th>Price</th>
                                     <th>Qty</th>
                                     <th>Subtotal</th>
@@ -66,9 +65,11 @@
 
                                 <?php
                                 if ($hasItems) {
-                                    foreach ($_SESSION['cart'] as $prodId => $qty) {
-                                        $prodId = intval($prodId);
-                                        $qty = intval($qty);
+                                    foreach ($_SESSION['cart'] as $index => $item) {
+                                        $prodId = intval($item['product_id']);
+                                        $qty = intval($item['qty']);
+                                        $size = htmlspecialchars($item['size']);
+
                                         if ($qty < 1)
                                             continue;
 
@@ -82,12 +83,12 @@
                                             $cqty += $qty;
                                             $camt += $subtotal;
                                             ?>
-
                                             <tr>
                                                 <td>
                                                     <img src="<?= $img ?>" style="max-height: 80px;" alt="Product">
                                                     <div><?= htmlspecialchars($p['prod_title']) ?></div>
                                                 </td>
+                                                <td><?= $size ?></td>
                                                 <td>₹<?= number_format($price, 2) ?></td>
                                                 <td><?= $qty ?></td>
                                                 <td>₹<?= number_format($subtotal, 2) ?></td>
@@ -96,21 +97,22 @@
                                                         class="btn btn-danger btn-sm">Remove</a>
                                                 </td>
                                             </tr>
-
                                             <?php
                                         }
                                     }
                                 } else {
-                                    echo '<tr><td colspan="5" class="text-center text-muted">Your cart is empty.</td></tr>';
+                                    echo '<tr><td colspan="6" class="text-center text-muted">Your cart is empty.</td></tr>';
                                 }
                                 ?>
+
 
                             </tbody>
                         </table>
 
                         <div class="row mt-4">
                             <div class="col-md-8 mb-3">
-                                <a href="<?= $url->baseUrl("") ?>" class="btn btn-outline-dark">Continue Shopping</a>
+                                <a href="<?= $url->baseUrl("shop") ?>" class="btn btn-outline-dark">Continue
+                                    Shopping</a>
                             </div>
                             <div class="col-md-4">
                                 <table class="table">

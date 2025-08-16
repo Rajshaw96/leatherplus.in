@@ -34,7 +34,7 @@ if (isset($_SESSION['cart'])) {
         $city           = htmlspecialchars($_POST['city'] ?? '');
         $postcode       = htmlspecialchars($_POST['pincode'] ?? '');
         $country        = htmlspecialchars($_POST['country'] ?? '');
-        $region         = htmlspecialchars($_POST['region'] ?? '');
+        $region         = htmlspecialchars($_POST['state'] ?? '');
         $user_id        = intval($_SESSION['user_id'] ?? 0);
         $cart_total     = floatval($_SESSION['cart_totalamt'] ?? 0);
         $tax            = floatval($_SESSION['enabletaxes'] ?? 0);
@@ -50,7 +50,7 @@ if (isset($_SESSION['cart'])) {
             `order_company`, `order_address`, `order_city`, `order_postcode`, `order_country`,
             `order_state`, `order_paystatus`
         ) VALUES (
-            '$order_num', '$order_date', '$cart_details', $cart_total, $tax,
+            '$order_num', '$order_date', '".json_encode($_SESSION['cart'])."', $cart_total, $tax,
             'Pending', $user_id, '$fullname', '$email2', '$phone',
             '$company', '$address', '$city', '$postcode', '$country',
             '$region', 0
@@ -149,7 +149,7 @@ if (isset($_SESSION['cart'])) {
                 $_SESSION['cart'] = [];
                 $_SESSION['cart_totalamt'] = 0;
                 unset($_SESSION['enabletaxes']);
-                header('location:' . $url->baseUrl('app/thank-you?order=' . $order_num));
+                header('location:' . $url->baseUrl('views/app/thank-you?order=' . $order_num));
             } else {
                 if (strtolower($country) === "india") {
                     header('location:' . $url->baseUrl("rzp/pay.php?rcpt=$order_num&amt=$ttlamtofcart&name=$fullname&phone=$phone&email=$email1"));

@@ -79,7 +79,7 @@ if ($result && mysqli_num_rows($result) > 0) {
         $regularPrice = (float) $product['prod_regularprice'];
         $salePrice = (float) $product['prod_saleprice'] ?? 0;
 
-        $finalSalePrice = $salePrice > 0 ? $salePrice : $regularPrice - 350;
+        $finalSalePrice = $salePrice > 0 ? $salePrice : $regularPrice;
         $finalSalePrice = max($finalSalePrice, 1); // prevent negative prices
         $discountPercent = round(100 - ($finalSalePrice / $regularPrice) * 100);
 
@@ -115,14 +115,24 @@ if ($result && mysqli_num_rows($result) > 0) {
       <div class='product-name'>$title</div>
       <div class='d-flex justify-content-between align-items-center'>
         <div class='price'>
-          <del style='color:#888;'>₹$formattedRegular</del>
-          <span style='font-size:17px; font-weight: 500;'>₹$formattedSale</span>
+          ";
+          
+          // Only show <del> when there’s a valid sale price
+          if ($salePrice > 0 && $salePrice < $regularPrice) {
+              echo "<del style='color:#888;'>₹$formattedRegular</del>
+                    <span style='font-size:17px; font-weight: 500;'>₹$formattedSale</span>";
+          } else {
+              echo "<span style='font-size:17px; font-weight: 500;'>₹$formattedRegular</span>";
+          }
+          
+          echo "
         </div>
         <div class='rating-product'>★ $formattedRating</div>
       </div>
     </div>
   </a>
 </div>
+
 ";
 
     }
