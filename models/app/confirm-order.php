@@ -58,6 +58,22 @@ if (isset($_SESSION['cart'])) {
 
         $resultcartdata = $database->runQuery($insertQuery);
 
+        // 🔹 Store in abandoned_orders table immediately (order_paystatus = 0)
+        if ($resultcartdata !== false) {
+            $insertAbandoned = "INSERT INTO `abandoned_orders` (
+                `order_num`, `order_date`, `order_details`, `order_total`, `order_tax`,
+                `order_status`, `order_userid`, `order_fullname`, `order_email`, `order_phone`,
+                `order_company`, `order_address`, `order_city`, `order_postcode`, `order_country`,
+                `order_state`, `order_paystatus`
+            ) VALUES (
+                '$order_num', '$order_date', '$cart_details', $cart_total, $tax,
+                'Pending', $user_id, '$fullname', '$email2', '$phone',
+                '$company', '$address', '$city', '$postcode', '$country',
+                '$region', 0
+            )";
+            $database->runQuery($insertAbandoned);
+        }
+
         if ($resultcartdata !== false) {
             $ttlamtofcart = floatval($_SESSION['cart_totalamt'] ?? 0);
 
@@ -166,7 +182,4 @@ if (isset($_SESSION['cart'])) {
         header('location:' . $url->baseUrl('app/cart'));
     }
 }
-
-
-
 ?>
