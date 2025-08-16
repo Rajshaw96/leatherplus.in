@@ -80,7 +80,7 @@ if (isset($_SESSION['cart'])) {
                 }
             }
 
-            // Prepare Shipway request body
+            // Prepare Shipway request body (common for COD + Prepaid success page)
             $firstName = strtok($fullname, ' ');
             $lastName = trim(str_replace($firstName, '', $fullname));
 
@@ -124,33 +124,34 @@ if (isset($_SESSION['cart'])) {
                 "order_date" => date("Y-m-d H:i:s")
             ];
 
-            // Push order to Shipway
-            $shipwayAuth = base64_encode("info@leatherplus.in:y983VSB2Tn34tW3xv0u4687rVk1keKq8");
-            $response = shipwayApiPost(
-                'https://app.shipway.com/api/v2orders',
-                $data,
-                'info@leatherplus.in', // username
-                'y983VSB2Tn34tW3xv0u4687rVk1keKq8' // password
-            );
-
-
-            if (isset($response['error'])) {
-                error_log("Shipway Push Order Error: " . ($response['message'] ?? 'Unknown error'));
-            } else {
-                $awb = $response['awb'] ?? null;
-                if ($awb) {
-                    $database->runQuery("UPDATE `orders` SET `awb` = '$awb', `order_status` = 'Processing' WHERE `order_num` = '$order_num'");
-                }
-            }
-
             // Payment handling
             if (strtolower($payment_mode) === 'cod') {
+                // ✅ COD Orders → Call Shipway immediately
+                $response = shipwayApiPost(
+                    'https://app.shipway.com/api/v2orders',
+                    $data,
+                    'info@leatherplus.in',
+                    'y983VSB2Tn34tW3xv0u4687rVk1keKq8'
+                );
+
+                if (isset($response['error'])) {
+                    error_log("Shipway Push Order Error: " . ($response['message'] ?? 'Unknown error'));
+                } else {
+                    $awb = $response['awb'] ?? null;
+                    if ($awb) {
+                        $database->runQuery("UPDATE `orders` SET `awb` = '$awb', `order_status` = 'Processing' WHERE `order_num` = '$order_num'");
+                    }
+                }
+
                 $database->runQuery("UPDATE `orders` SET `order_status` = 'Pending', `order_paystatus` = 2 WHERE `order_num` = '$order_num'");
                 $_SESSION['cart'] = [];
                 $_SESSION['cart_totalamt'] = 0;
                 unset($_SESSION['enabletaxes']);
                 header('location:' . $url->baseUrl('app/thank-you?order=' . $order_num));
+
             } else {
+                // ✅ Prepaid Orders → Do not call Shipway here
+                // Call Shipway later in payment success page only if payment is successful
                 if (strtolower($country) === "india") {
                     header('location:' . $url->baseUrl("rzp/pay.php?rcpt=$order_num&amt=$ttlamtofcart&name=$fullname&phone=$phone&email=$email1"));
                 } else {
