@@ -2,7 +2,7 @@
   /* Adjust slider height */
   #heroCarousel .carousel-item img,
   #heroCarousel .carousel-item video {
-    height: 800px;
+    height: 680px;
     /* set your preferred height */
     object-fit: cover;
     /* crop nicely instead of stretching */

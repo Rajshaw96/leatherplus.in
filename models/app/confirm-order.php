@@ -26,8 +26,7 @@ if (isset($_SESSION['cart'])) {
 
         // Safely get values with fallbacks
         $fullname       = htmlspecialchars($_POST['fullname'] ?? '');
-        $email1         = htmlspecialchars($_POST['email'] ?? '');
-        $email2         = htmlspecialchars($_POST['email2'] ?? $email1);
+        $email      = htmlspecialchars($_POST['email'] ?? '');
         $phone          = htmlspecialchars($_POST['phone'] ?? '');
         $company        = htmlspecialchars($_POST['company'] ?? '');
         $address        = htmlspecialchars($_POST['address'] ?? '');
@@ -51,7 +50,7 @@ if (isset($_SESSION['cart'])) {
             `order_state`, `order_paystatus`
         ) VALUES (
             '$order_num', '$order_date', '".json_encode($_SESSION['cart'])."', $cart_total, $tax,
-            'Pending', $user_id, '$fullname', '$email2', '$phone',
+            'Pending', $user_id, '$fullname', '$email', '$phone',
             '$company', '$address', '$city', '$postcode', '$country',
             '$region', 0
         )";
@@ -67,7 +66,7 @@ if (isset($_SESSION['cart'])) {
                 `order_state`, `order_paystatus`
             ) VALUES (
                 '$order_num', '$order_date', '$cart_details', $cart_total, $tax,
-                'Pending', $user_id, '$fullname', '$email2', '$phone',
+                'Pending', $user_id, '$fullname', '$email', '$phone',
                 '$company', '$address', '$city', '$postcode', '$country',
                 '$region', 0
             )";
@@ -110,7 +109,7 @@ if (isset($_SESSION['cart'])) {
                 "gift_card_amt" => "0",
                 "taxes" => strval($tax),
                 "payment_type" => strtolower($payment_mode) === 'cod' ? "C" : "P",
-                "email" => $email2,
+                "email" => $email,
                 "billing_address" => $address,
                 "billing_address2" => $company,
                 "billing_city" => $city,
@@ -169,9 +168,9 @@ if (isset($_SESSION['cart'])) {
                 // ✅ Prepaid Orders → Do not call Shipway here
                 // Call Shipway later in payment success page only if payment is successful
                 if (strtolower($country) === "india") {
-                    header('location:' . $url->baseUrl("rzp/pay.php?rcpt=$order_num&amt=$ttlamtofcart&name=$fullname&phone=$phone&email=$email1"));
+                    header('location:' . $url->baseUrl("rzp/pay.php?rcpt=$order_num&amt=$ttlamtofcart&name=$fullname&phone=$phone&email=$email"));
                 } else {
-                    header('location:' . $url->baseUrl("paypal/index.php?rcpt=$order_num&amt=$ttlamtofcart&name=$fullname&phone=$phone&email=$email2"));
+                    header('location:' . $url->baseUrl("paypal/index.php?rcpt=$order_num&amt=$ttlamtofcart&name=$fullname&phone=$phone&email=$email"));
                 }
             }
         } else {

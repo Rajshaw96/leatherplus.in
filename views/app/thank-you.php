@@ -22,7 +22,7 @@
     <?php include('includes/header-2.inc.php') ?>
     <div class="thankyou-container">
         <h2>Thank You for Your Order!</h2>
-        <p>Your order <?php echo htmlspecialchars($_GET['order']); ?> has been placed successfully with Cash on
+        <p>Your order <b><?php echo htmlspecialchars($_GET['order']); ?></b> has been placed successfully with Cash on
             Delivery.</p>
         <div class="d-flex gap-2">
             <a href="<?= $url->baseUrl("shop") ?>" class="apply-button">Continue Shopping</a>
