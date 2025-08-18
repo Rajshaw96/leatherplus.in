@@ -29,7 +29,7 @@ if ($request->checkRequestHash($_POST['key'], $_SESSION['secretcode']) == true) 
 
         if (strlen($_FILES['category_cover']['tmp_name']) > 3) {
 
-            echo $covername = $filesop->uploadAndCompressImage("../../../uploads/product-category/", $_FILES['category_cover'], date('ymdhis'));
+            echo $covername = $filesop->uploadAndCompressImage("../../../uploads/category-images/", $_FILES['category_cover'], date('ymdhis'));
         } else {
             echo $covername = $_POST['catcover'];
         }

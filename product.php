@@ -29,6 +29,7 @@ if ($connStatus == true) {
             while ($product = mysqli_fetch_array($result)) {
 
                 $title = $product['prod_title'];
+                $nickname = $product['prod_nick'];
                 $shortdesc = $product['prod_shortdesc'];
                 $desc = $product['prod_desc'];
                 $type = $product['prod_type'];

@@ -20,7 +20,8 @@
 
     <!-- Logo -->
     <a class="navbar-brand d-none d-lg-flex justify-content-center align-items-center" href="<?= $url->baseUrl("") ?>">
-      <img src="./views/app/assets/images/leatherplus_logo.png" alt="LeatherPlus1" style="height: 35px;">
+      <img src="<?= $url->baseUrl("views/app/assets/images/leatherplus_logo.png") ?>" alt="LeatherPlus1"
+        style="height: 35px;">
     </a>
     <?php
     $cqty = 0;
@@ -231,28 +232,36 @@ $cqty = 0;
 $camt = 0;
 $cartHtml = "";
 
-if (isset($_SESSION['cart']) && count($_SESSION['cart']) > 0) {
-  foreach ($_SESSION['cart'] as $prodId => $qty) {
-    $prodResult = $database->getData("SELECT * FROM products WHERE prod_id = '$prodId' AND prod_status = 1");
-    if ($prodResult && mysqli_num_rows($prodResult) > 0) {
-      $product = mysqli_fetch_assoc($prodResult);
-      $price = $product['prod_saleprice'] > 0 ? $product['prod_saleprice'] : $product['prod_regularprice'];
-      $img = $url->baseUrl("uploads/product-images/" . $product['prod_featuredimage']);
+if (!empty($_SESSION['cart']) && is_array($_SESSION['cart'])) {
+  foreach ($_SESSION['cart'] as $item) {
+    $prodId = $item['product_id'];
+    $qty = $item['qty'];
+    $size = $item['size'] ?? '';
+    $name = $item['name'] ?? '';
+
+    $res = $database->getData("SELECT * FROM products WHERE prod_id = '$prodId' AND prod_status = 1");
+    if ($res && mysqli_num_rows($res) > 0) {
+      $p = mysqli_fetch_assoc($res);
+      $price = $p['prod_saleprice'] > 0 ? $p['prod_saleprice'] : $p['prod_regularprice'];
+      $img = $url->baseUrl("uploads/product-images/" . $p['prod_featuredimage']);
+
       $cartHtml .= "
         <div class='cart-item'>
           <img src='$img' alt='Product'>
           <div class='flex-grow-1'>
-            <div><strong>" . htmlspecialchars($product['prod_title']) . "</strong></div>
+            <div><strong>" . htmlspecialchars($name ?: $p['prod_title']) . "</strong></div>
+            " . (!empty($size) ? "<div class='text-muted-small'>Size: " . htmlspecialchars($size) . "</div>" : "") . "
             <div class='text-muted-small'>₹$price</div>
             <div class='quantity-control'>
-              <button onclick=\"updateQty($prodId,-1)\">-</button>
+              <button onclick=\"updateQty($prodId,-1,'$size')\">-</button>
               <span>$qty</span>
-              <button onclick=\"updateQty($prodId,1)\">+</button>
+              <button onclick=\"updateQty($prodId,1,'$size')\">+</button>
             </div>
           </div>
-          <button class='remove-btn' onclick=\"removeFromCart($prodId)\">&times;</button>
+          <button class='remove-btn' onclick=\"removeFromCart($prodId,'$size')\">&times;</button>
         </div>
       ";
+
       $cqty += $qty;
       $camt += $price * $qty;
     }
@@ -304,32 +313,30 @@ if (isset($_SESSION['cart']) && count($_SESSION['cart']) > 0) {
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-  function updateQty(productId, change) {
+  function updateQty(productId, change, size = '') {
     fetch("<?= $url->baseUrl('views/app/ajax/update-cart.php') ?>", {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `product_id=${productId}&change=${change}`
+      body: `product_id=${productId}&change=${change}&size=${encodeURIComponent(size)}`
     })
       .then(res => res.json())
       .then(data => {
         if (data.success) {
-          // Optionally, update the DOM here for the specific item and subtotal
-          refreshCart(); // Call function to re-render cart HTML via AJAX
+          refreshCart();
         }
       });
   }
 
-
-  function removeFromCart(productId) {
+  function removeFromCart(productId, size = '') {
     fetch("<?= $url->baseUrl('views/app/ajax/remove-from-cart.php') ?>", {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `product_id=${productId}`
+      body: `product_id=${productId}&size=${encodeURIComponent(size)}`
     })
       .then(res => res.json())
       .then(data => {
         if (data.success) {
-          refreshCart(); // Refresh cart HTML without page reload
+          refreshCart();
         }
       });
   }

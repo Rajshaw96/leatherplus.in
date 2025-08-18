@@ -23,8 +23,8 @@ while ($row = $result->fetch_assoc()) {
 
 <head>
   <meta charset="utf-8">
-  <title><?= $title ?> - Leather Plus</title>
-  <meta name="description" content="Buy <?= $title ?> online">
+  <title><?= htmlspecialchars(!empty($nickname) ? $nickname : $title) ?> - Leather Plus</title>
+  <meta name="description" content="Buy <?= htmlspecialchars(!empty($nickname) ? $nickname : $title) ?> online">
 
   <!--[if IE]> <meta http-equiv="X-UA-Compatible" content="IE=edge"> <![endif]-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -57,7 +57,7 @@ while ($row = $result->fetch_assoc()) {
     <span class="separator">›</span>
     <a href="<?= $url->baseUrl("shop") ?>">Category</a>
     <span class="divider">|</span>
-    <span class="current"><?= htmlspecialchars($title) ?></span>
+    <span class="current"><?= htmlspecialchars(!empty($nickname) ? $nickname : $title) ?></span>
   </div>
 
   <div class="container-fluid px-lg-5">
@@ -71,20 +71,28 @@ while ($row = $result->fetch_assoc()) {
         </div>
       </div>
       <div class="col-md-7">
-        <h2 class="product-title mt-4 mt-lg-0"><?= htmlspecialchars($title) ?></h2>
+        <h2 class="product-title mt-4 mt-lg-0">
+          <?= htmlspecialchars(!empty($nickname) ? $nickname : $title) ?>
+        </h2>
+
         <p class="price">
           <?php
           $regularFormatted = number_format((float) $regularprice, 1);
+
           if ($saleprice > 0) {
+            // Show regular with strike + sale price
             $saleFormatted = number_format((float) $saleprice, 1);
-            echo "<del>₹$regularFormatted</del><span style='color: #5c2e0f;font-size:22px;margin-left:10px;'> ₹$saleFormatted </span>";
+            echo "<del>₹$regularFormatted</del>
+            <span style='color: #5c2e0f;font-size:22px;margin-left:10px;'>
+              ₹$saleFormatted
+            </span>";
           } else {
-            $adjustedSale = $regularprice - 350;
-            $adjustedSaleFormatted = number_format((float) $adjustedSale, 1);
-            echo "<del>₹$regularFormatted</del> <span style='color: #5c2e0f;font-size:22px;margin-left:10px;'>₹$adjustedSaleFormatted</span>";
+            // Show only regular price (no strike, no discount)
+            echo "<span style='color: #5c2e0f;font-size:22px;'>₹$regularFormatted</span>";
           }
           ?>
         </p>
+
 
         <?php
         $total_reviews = count($reviews);

@@ -1,7 +1,7 @@
 <?php
 // footer.php
-require_once('lib/helpers/urlhelpers.php');
-$url = $url ?? new UrlHelpers(); // Ensure $url is available
+// require_once('lib/helpers/urlhelpers.php');
+ // Ensure $url is available
 ?>
 
 <div class="container-fluid px-lg-5 px-4 feature-row d-flex padding-bottoms">
