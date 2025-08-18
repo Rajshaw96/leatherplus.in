@@ -76,6 +76,18 @@
 
         <!-- Nav Item - Pages Collapse Menu -->
         <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAbandonedOrders" aria-expanded="true" aria-controls="collapseAbandonedOrders">
+                <i class="fa fa-gift"></i>
+                <span>Abandoned Cart</span>
+            </a>
+            <div id="collapseAbandonedOrders" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <a class="collapse-item" href="<?= $url->baseUrl("admin/abandoned-cart/all") ?>">View All</a>
+                </div>
+            </div>
+        </li>
+
+        <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOrders" aria-expanded="true" aria-controls="collapseOrders">
                 <i class="fa fa-gift"></i>
                 <span>Orders</span>
