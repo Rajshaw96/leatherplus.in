@@ -15,8 +15,9 @@ $searchTerm = trim($searchTerm);
 
 if (!empty($searchTerm)) {
     $escaped = mysqli_real_escape_string($database->conn, $searchTerm);
-    $where .= " AND prod_title LIKE '%$escaped%'";
+    $where .= " AND (prod_title LIKE '%$escaped%' OR prod_nick LIKE '%$escaped%')";
 }
+
 
 // Collect all category IDs (parent + child)
 $allCatIDs = [];
@@ -75,7 +76,10 @@ $result = $database->getData($query);
 if ($result && mysqli_num_rows($result) > 0) {
     while ($product = mysqli_fetch_array($result)) {
         $productId = htmlspecialchars($product['prod_id']);
-        $title = htmlspecialchars($product['prod_title']);
+        // Prefer nickname if available, otherwise title
+        $nickname = $product['prod_nick'] ?? '';
+        $displayTitle = !empty($nickname) ? htmlspecialchars($nickname) : htmlspecialchars($product['prod_title']);
+
         $regularPrice = (float) $product['prod_regularprice'];
         $salePrice = (float) $product['prod_saleprice'] ?? 0;
 
@@ -110,22 +114,22 @@ if ($result && mysqli_num_rows($result) > 0) {
 <div class='product-card'>
   <a href='$productUrl'>
     <div class='discount'>-$discountPercent%</div>
-    <img src='$imageUrl' alt='$title' />
+    <img src='$imageUrl' alt='$displayTitle' />
     <div class='p-3'>
-      <div class='product-name'>$title</div>
+      <div class='product-name'>$displayTitle</div>
       <div class='d-flex justify-content-between align-items-center'>
         <div class='price'>
           ";
-          
-          // Only show <del> when there’s a valid sale price
-          if ($salePrice > 0 && $salePrice < $regularPrice) {
-              echo "<del style='color:#888;'>₹$formattedRegular</del>
+
+        // Only show <del> when there’s a valid sale price
+        if ($salePrice > 0 && $salePrice < $regularPrice) {
+            echo "<del style='color:#888;'>₹$formattedRegular</del>
                     <span style='font-size:17px; font-weight: 500;'>₹$formattedSale</span>";
-          } else {
-              echo "<span style='font-size:17px; font-weight: 500;'>₹$formattedRegular</span>";
-          }
-          
-          echo "
+        } else {
+            echo "<span style='font-size:17px; font-weight: 500;'>₹$formattedRegular</span>";
+        }
+
+        echo "
         </div>
         <div class='rating-product'>★ $formattedRating</div>
       </div>

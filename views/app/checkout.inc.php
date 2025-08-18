@@ -11,7 +11,7 @@ if (!$conn) {
     die("<p class='text-danger'>Database connection failed.</p>");
 }
 
-$name  = $_SESSION['user']['fullname'] ?? "";
+$fullname  = $_SESSION['user']['fullname'] ?? "";
 $email = $_SESSION['user']['email'] ?? "";
 $phone = $_SESSION['user']['phone'] ?? "";
 ?>
@@ -48,7 +48,7 @@ $phone = $_SESSION['user']['phone'] ?? "";
 
                     <div class="mb-3">
                         <label class="form-label">Full Name</label>
-                        <input type="text" name="fullname" class="form-control" value="<?= htmlspecialchars($name) ?>" required>
+                        <input type="text" name="fullname" class="form-control" value="<?= htmlspecialchars($fullname) ?>" required>
                     </div>
 
                     <div class="mb-3">
@@ -112,11 +112,12 @@ $phone = $_SESSION['user']['phone'] ?? "";
                                 if ($res && mysqli_num_rows($res) > 0) {
                                     $p = mysqli_fetch_assoc($res);
                                     $price = $p['prod_saleprice'] > 0 ? $p['prod_saleprice'] : $p['prod_regularprice'];
+                                    $nickname = $p['prod_nick'] ? $p['prod_nick']: $p['prod_title'];
                                     $subtotal = $price * $qty;
                                     $total += $subtotal;
 
                                     echo "<div class='d-flex justify-content-between'>
-                                              <div>" . htmlspecialchars($name ?: $p['prod_title']) . 
+                                              <div style='color:#5c4511;font-weight:600;padding:5px 0;'>" . htmlspecialchars($nickname) . 
                                               (!empty($size) ? " (Size: " . htmlspecialchars($size) . ")" : "") . 
                                               " x$qty</div>
                                               <div>₹$subtotal</div>

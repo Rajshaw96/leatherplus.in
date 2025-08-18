@@ -16,7 +16,10 @@ if ($connStatus === true) {
 
   if ($result_products && mysqli_num_rows($result_products) > 0) {
     while ($product = mysqli_fetch_array($result_products)) {
-      $title = htmlspecialchars($product['prod_title']);
+      // Prefer nickname if available, otherwise title
+      $nickname = $product['prod_nick'] ?? '';
+      $displayTitle = !empty($nickname) ? htmlspecialchars($nickname) : htmlspecialchars($product['prod_title']);
+
       $regular = (float) $product['prod_regularprice'];
       $sale = (float) ($product['prod_saleprice'] ?? 0);
       $image = htmlspecialchars($product['prod_featuredimage']);
@@ -31,16 +34,16 @@ if ($connStatus === true) {
         <a href="<?= $productLink ?>">
 
           <?php if ($sale > 0 && $regular > $sale): ?>
-            <?php 
-              $discount = round(100 - ($sale / $regular) * 100);
+            <?php
+            $discount = round(100 - ($sale / $regular) * 100);
             ?>
             <div class="badge">-<?= $discount ?>%</div>
           <?php endif; ?>
 
-          <img class="product-image" src="<?= $imageUrl ?>" alt="<?= $title ?>" />
+          <img class="product-image" src="<?= $imageUrl ?>" alt="<?= $displayTitle ?>" />
           <div class="product-details">
             <div class="product-name">
-              <a href="<?= $productLink ?>"><?= $title ?></a>
+              <a href="<?= $productLink ?>"><?= $displayTitle ?></a>
             </div>
             <div class="price-rating-row">
               <div class="product-price">

@@ -79,6 +79,7 @@
                                             $price = $p['prod_saleprice'] > 0 ? $p['prod_saleprice'] : $p['prod_regularprice'];
                                             $img = $url->baseUrl("uploads/product-images/" . $p['prod_featuredimage']);
                                             $subtotal = $price * $qty;
+                                            $nickname = $p['prod_nick'] ? $p['prod_nick']: $p['prod_title'];
 
                                             $cqty += $qty;
                                             $camt += $subtotal;
@@ -86,7 +87,7 @@
                                             <tr>
                                                 <td>
                                                     <img src="<?= $img ?>" style="max-height: 80px;" alt="Product">
-                                                    <div><?= htmlspecialchars($p['prod_title']) ?></div>
+                                                    <div style='color:#5c4511;font-weight:600;padding:10px 0;'><?= htmlspecialchars($nickname) ?></div>
                                                 </td>
                                                 <td><?= $size ?></td>
                                                 <td>₹<?= number_format($price, 2) ?></td>

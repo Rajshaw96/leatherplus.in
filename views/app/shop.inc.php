@@ -155,83 +155,8 @@
   <!-- <a href="#header" id="scroll-top" title="Go to top">Top</a> -->
 
   <!-- END -->
-  <!-- <script>
-    document.querySelectorAll('#filterForm input, #filterForm select').forEach(el => {
-      el.addEventListener('change', () => {
-        const form = document.getElementById('filterForm');
-        const formData = new FormData(form);
-
-        // ✅ Include search query from URL if present
-        const urlParams = new URLSearchParams(window.location.search);
-        const search = urlParams.get('search');
-        if (search) {
-          formData.append('search', search);
-        }
-
-        fetch('views/app/ajax/filter-products.php', {
-          method: 'POST',
-          body: formData
-        })
-          .then(res => res.text())
-          .then(data => {
-            const grid = document.getElementById('productGrid');
-            if (grid) grid.innerHTML = data;
-          });
-      });
-    });
-
-
-    function clearFilters() {
-      document.getElementById('filterForm').reset();
-      const event = new Event('change');
-      document.querySelector('#filterForm select').dispatchEvent(event);
-    }
-
-    // Initial load
-    document.querySelector('#filterForm select').dispatchEvent(new Event('change'));
-  </script> -->
-  <!-- <script>
-    const filterForm = document.getElementById('filterForm');
-    const productGrid = document.getElementById('productGrid');
-
-    // function fetchFilteredProducts() {
-    //   const formData = new FormData(filterForm);
-
-    //   // Include search from URL if any
-    //   const urlParams = new URLSearchParams(window.location.search);
-    //   const search = urlParams.get('search');
-    //   if (search) formData.append('search', search);
-
-    //   fetch('views/app/ajax/filter-products.php', {
-    //     method: 'POST',
-    //     body: formData
-    //   })
-    //     .then(res => res.text())
-    //     .then(data => {
-    //       productGrid.innerHTML = data;
-    //     });
-    // }
-
-    // Trigger on change for checkboxes and sort select (excluding price inputs)
-    // document.querySelectorAll('#filterForm input[type="checkbox"], #filterForm select').forEach(el => {
-    //   el.addEventListener('change', fetchFilteredProducts);
-    // });
-
-    // Price filter triggered only by Apply button
-    document.getElementById('applyPriceFilter').addEventListener('click', fetchFilteredProducts);
-
-    // Clear Filters
-    function clearFilters() {
-      filterForm.reset();
-      fetchFilteredProducts();
-    }
-
-    // Bind clear button
-    document.querySelector('.clear-filter').addEventListener('click', clearFilters);
-
-    // Initial load
-    // fetchFilteredProducts();
-  </script> -->
+  
+ 
   <script>
     let offset = 0;
     const limit = 8;

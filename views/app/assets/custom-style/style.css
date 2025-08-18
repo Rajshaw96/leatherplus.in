@@ -1004,7 +1004,9 @@ a {
   color: #588157;
   outline: none;
 }
-
+.discount-code input:focus{
+  background-color: transparent;
+}
 .discount-code button {
   background-color: #2e5d3f;
   border: none;

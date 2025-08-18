@@ -123,7 +123,69 @@ if ($request->checkRequestHash($_POST['key'], $_SESSION['secretcode']) == true) 
 
         if ($connStatus == true) {
 
-            $result = $database->runQuery("INSERT INTO `products`(`prod_secret`, `prod_title`, `prod_shortdesc`, `prod_desc`, `prod_type`, `prod_tax`, `prod_regularprice`, `prod_saleprice`, `prod_managestock`, `prod_sku`, `prod_shippingweight`, `prod_shippingl`, `prod_shippingw`, `prod_shippingh`, `prod_featuredimage`, `prod_gallery`, `prod_video`, `prod_cats`, `prod_attributes`, `prod_matstatus`, `prod_matparent`, `prod_matpattribid`, `prod_defmatattrib`, `prod_tags`, `prod_setas`, `prod_status`) VALUES('" . $_POST['prod_secret'] . "', '" . mysqli_real_escape_string($database->conn,  $_POST['product_title']) . "', '" . base64_encode($_POST['product_shortdesc']) . "', '" . base64_encode($_POST['product_desc']) . "', '" . $_POST['product_type'] . "', " . $_POST['tax'] . ", '" . $_POST['regular_price'] . "', '" . $saleprice . "', " . $managestock . ", '" . $_POST['sku'] . "', '" . $_POST['weight'] . "', '" . $_POST['length'] . "', '" . $_POST['width'] . "', '" . $_POST['height'] . "', '" . $_POST['uploadedfeatured'] . "', '" . $galleries . "', '" . base64_encode($_POST['product_video']) . "', '" . $categories . "', '" . $attributes . "', " . $_POST['matstatus'] . ", '" . $_POST['matattrib'] . "',  '" . $materials . "', '" . $_POST['defmatattrib'] . "', '" . $_POST['tags'] . "', '" . $_POST['setas'] . "', " . $_POST['status'] . ")");
+            $result = $database->runQuery("
+    INSERT INTO `products`
+    (
+        `prod_secret`, 
+        `prod_nick`, 
+        `prod_title`, 
+        `prod_shortdesc`, 
+        `prod_desc`, 
+        `prod_type`, 
+        `prod_tax`, 
+        `prod_regularprice`, 
+        `prod_saleprice`, 
+        `prod_managestock`, 
+        `prod_sku`, 
+        `prod_shippingweight`, 
+        `prod_shippingl`, 
+        `prod_shippingw`, 
+        `prod_shippingh`, 
+        `prod_featuredimage`, 
+        `prod_gallery`, 
+        `prod_video`, 
+        `prod_cats`, 
+        `prod_attributes`, 
+        `prod_matstatus`, 
+        `prod_matparent`, 
+        `prod_matpattribid`, 
+        `prod_defmatattrib`, 
+        `prod_tags`, 
+        `prod_setas`, 
+        `prod_status`
+    )
+    VALUES
+    (
+        '" . $_POST['prod_secret'] . "',
+        '" . mysqli_real_escape_string($database->conn, $_POST['product_nick']) . "',
+        '" . mysqli_real_escape_string($database->conn, $_POST['product_title']) . "',
+        '" . base64_encode($_POST['product_shortdesc']) . "',
+        '" . base64_encode($_POST['product_desc']) . "',
+        '" . $_POST['product_type'] . "',
+        " . $_POST['tax'] . ",
+        '" . $_POST['regular_price'] . "',
+        '" . $saleprice . "',
+        " . $managestock . ",
+        '" . $_POST['sku'] . "',
+        '" . $_POST['weight'] . "',
+        '" . $_POST['length'] . "',
+        '" . $_POST['width'] . "',
+        '" . $_POST['height'] . "',
+        '" . $_POST['uploadedfeatured'] . "',
+        '" . $galleries . "',
+        '" . base64_encode($_POST['product_video']) . "',
+        '" . $categories . "',
+        '" . $attributes . "',
+        " . $_POST['matstatus'] . ",
+        '" . $_POST['matattrib'] . "',
+        '" . $materials . "',
+        '" . $_POST['defmatattrib'] . "',
+        '" . $_POST['tags'] . "',
+        '" . $_POST['setas'] . "',
+        " . $_POST['status'] . "
+    )
+");
+
 
             if ($result == true) {
 

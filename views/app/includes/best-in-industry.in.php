@@ -5,7 +5,7 @@
         <h4>Best in Industry</h4>
         <h1>Best Leather Products</h1>
         <p>Discover the perfect fusion of elegance and functionality with our best material.</p>
-        <button class="explore-btn">Explore More</button>
+        <a href="<?= $url->baseUrl("shop") ?>" class="explore-btn text-white text-decoration-none">Explore More</a>
       </div>
       <div class="carousel-controls">
         <button id="controller" class="control-btn  prev">&#8592;</button>

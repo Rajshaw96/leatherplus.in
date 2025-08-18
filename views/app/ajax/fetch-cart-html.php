@@ -32,12 +32,13 @@ if (!empty($_SESSION['cart']) && is_array($_SESSION['cart'])) {
       $p = mysqli_fetch_assoc($res);
       $price = $p['prod_saleprice'] > 0 ? $p['prod_saleprice'] : $p['prod_regularprice'];
       $img   = $url->baseUrl("uploads/product-images/" . $p['prod_featuredimage']);
+      $nickname = $p['prod_nick'] ? $p['prod_nick']: $p['prod_title'];
 
       $cartHtml .= "
         <div class='cart-item'>
           <img src='$img' alt='Product'>
           <div class='flex-grow-1'>
-            <div><strong>" . htmlspecialchars($name ?: $p['prod_title']) . "</strong></div>
+            <div><strong>" . htmlspecialchars($nickname) . "</strong></div>
             " . (!empty($size) ? "<div class='text-muted-small'>Size: " . htmlspecialchars($size) . "</div>" : "") . "
             <div class='text-muted-small'>₹$price</div>
             <div class='quantity-control'>

@@ -13,12 +13,21 @@
         while ($category = mysqli_fetch_array($result_categories)) {
           $categoryId = $category['pcat_id'];
           $categoryName = htmlspecialchars($category['pcat_name']);
-          $imagePath = "./views/app/assets/images/default.jpg"; // fallback
+          $imgcover = htmlspecialchars($category['pcat_cover']);
 
-          if (file_exists("./views/app/assets/images/Category ($categoryId).png")) {
-            $imagePath = "./views/app/assets/images/Category ($categoryId).png";
-          }
+          // Default image
+          $imagePath = $url->baseUrl("views/app/assets/images/default.jpg");
 
+          // Check if category image exists (png/jpg)
+          $imageDir = "uploads/category-images/";
+          if (file_exists($imageDir . "$imgcover")) {
+              $imagePath = $url->baseUrl($imageDir . "$imgcover");
+          } 
+          // elseif (file_exists($imageDir . "Category ($categoryId).jpg")) {
+          //     $imagePath = $url->baseUrl($imageDir . "Category ($categoryId).jpg");
+          // }
+
+          // Shop URL
           $shopUrl = $url->baseUrl("shop?cat=$categoryId");
           ?>
           <div class="col-12 col-sm-6 col-md-4">

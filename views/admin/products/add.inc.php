@@ -73,6 +73,10 @@
                             </div>
                             <div class="card-body">
                                 <div class="form-group">
+    <label for="">Product Nickname</label>
+    <input type="text" class="form-control" name="product_nick">
+</div>
+                                <div class="form-group">
                                     <label for="">Product Title</label>
                                     <input type="text" class="form-control" name="product_title">
                                 </div>

@@ -145,6 +145,8 @@ $galleryarray =  explode(',', $gallery);
                         <?php
 
                         $_SESSION['secretcode'] = rand(10000000000, 99999999999);
+                        // $nickname = $product['prod_nick'] ?? '';
+                       
                         ?>
 
                         <input type="hidden" value="<?= $request->encodeRequestHash($_SESSION['secretcode']) ?>" name="key" id="key">
@@ -154,12 +156,24 @@ $galleryarray =  explode(',', $gallery);
                         <input type="hidden" value="<?= $gallery ?>" name="oldgallery">
 
                         <input type="hidden" value="<?= $featuredimage ?>" name="oldfeaturedimage">
+                        <?php 
+                       $productId = intval($_GET['q']);
+$query = "SELECT * FROM products WHERE prod_id = $productId LIMIT 1";
+$result = $database->getData($query);
+$product = mysqli_fetch_assoc($result);
 
+$nickname = $product['prod_nick'] ?? '';
+                        ?>
                         <div class="card shadow mb-4">
                             <div class="card-header py-3">
                                 <h6 class="m-0 font-weight-bold text-primary">Edit Product Details</h6>
                             </div>
                             <div class="card-body">
+                                <div class="form-group">
+                                    <label for="">Product Nickname </label>
+                                    <input type="text" class="form-control" name="product_nick" 
+                                        value="<?= $nickname ?>">
+                                </div>
                                 <div class="form-group">
                                     <label for="">Product Title</label>
                                     <input type="text" class="form-control" value="<?= $title ?>" name="product_title">
