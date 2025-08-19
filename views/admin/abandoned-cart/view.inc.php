@@ -9,11 +9,14 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Order [#<?= $_GET['q'] ?>]- Admin</title>
+    <title>Abandoned Cart Order [#<?= $_GET['q'] ?>]- Admin</title>
 
     <!-- Custom fonts for this template-->
-    <link href="<?= $url->baseUrl("views/assets/vendor/fontawesome-free/css/all.min.css") ?>" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <link href="<?= $url->baseUrl("views/assets/vendor/fontawesome-free/css/all.min.css") ?>" rel="stylesheet"
+        type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
 
     <!-- Custom styles for this template-->
     <link href="<?= $url->baseUrl("views/assets/css/sb-admin-2.min.css") ?>" rel="stylesheet">
@@ -63,6 +66,7 @@
                             <h5><?= $order_fullname ?></h5>
                             <p><b>Ph.</b> <?= $order_phone ?></p>
                             <p><?= $user_billingaddress ?></p>
+                            
                             <h6>Ship To</h6>
                             <p class="pb-4">
                                 <?= $order_address ?><br>
@@ -82,70 +86,53 @@
                                 <tbody>
 
                                     <?php
-
-                                    $itemnumber = -1;
-
+                                    // decode order_details JSON
                                     $enabletaxes = 0;
 
                                     foreach ($order_details as $item) {
+                                        $product_id = $item['product_id'];
+                                        $name = $item['name'];
+                                        $size = $item['size'];
+                                        $qty = $item['qty'];
 
-                                        $itemnumber = $itemnumber + 1;
-
-                                        $resultcartitems = $database->getData("SELECT * FROM `products` WHERE `prod_id`=" . $item[0] . "");
+                                        // fetch product details from DB
+                                        $resultcartitems = $database->getData("SELECT * FROM `products` WHERE `prod_id`=" . (int) $product_id);
 
                                         if ($resultcartitems != false) {
-
                                             while ($cartitems = mysqli_fetch_array($resultcartitems)) {
-
-                                    ?>
-
+                                                $price = $cartitems['prod_saleprice']?$cartitems['prod_saleprice']: $cartitems['prod_regularprice']; // make sure you have prod_price in your table
+                                                $subtotal = $qty * $price;
+                                                ?>
                                                 <tr>
                                                     <td class="product-name-col">
-                                                        <a href="#"><img src="<?= $url->baseUrl('uploads/product-images/' . $cartitems['prod_featuredimage']) ?>" alt="" style="max-height:90px">
-                                                            &nbsp;</a><?= $cartitems['prod_title'] ?> • <?= $item[4] ?>
+                                                        
+                                                        <?= $cartitems['prod_title']? $cartitems['prod_title']: $cartitems['prod_nick'] ?> • <?= $size ?>
                                                     </td>
-                                                    <td>
-                                                        <?= $cartitems['prod_sku'] ?>
-                                                    </td>
-                                                    <td>₹ <?= $item[2] ?></td>
-                                                    <td><?= $item[1] ?></td>
+                                                    <td><?= $cartitems['prod_sku'] ?></td>
+                                                    <td>₹ <?= $price ?></td>
+                                                    <td><?= $qty ?></td>
 
-                                                    <?php
-                                                    if ($enabletaxes == 1) {
-                                                    ?>
-
-                                                        <td><?= $item[3] ?>%</td>
-
-                                                        <td>₹ <?= $item[2] * ($item[3] / 100) ?></td>
-
-                                                        <td>₹ <?= ($item[2] * ($item[3] / 100)) + $item[2] ?></td>
-
+                                                    <?php if ($enabletaxes == 1) { ?>
+                                                        <td><?= $item['tax'] ?? 0 ?>%</td>
+                                                        <td>₹ <?= $price * (($item['tax'] ?? 0) / 100) ?></td>
+                                                        <td>₹ <?= ($price * (($item['tax'] ?? 0) / 100)) + $price ?></td>
                                                         <td>
                                                             <?php
-                                                            $totalamtoi = $item[1] * $item[2];
-                                                            $per1 = ($totalamtoi * $item[3]) / 100;
-                                                            echo "$ " . $amt = $totalamtoi + $per1;
+                                                            $totalamtoi = $qty * $price;
+                                                            $per1 = ($totalamtoi * ($item['tax'] ?? 0)) / 100;
+                                                            echo "₹ " . ($totalamtoi + $per1);
                                                             ?>
                                                         </td>
-                                                    <?php
-                                                    } else {
-                                                    ?>
-                                                        <td>₹ <?= $amt = $item[1] * $item[2] ?></td>
-
-                                                    <?php
-                                                    }
-                                                    ?>
+                                                    <?php } else { ?>
+                                                        <td>₹ <?= $subtotal ?></td>
+                                                    <?php } ?>
                                                 </tr>
-
-
-
-                                    <?php
-
-
+                                                <?php
                                             }
                                         }
                                     }
                                     ?>
+
                                 </tbody>
                             </table>
 
@@ -197,23 +184,23 @@
                                 <div class="col">
                                     <select class="form-control" id="orderstatus">
                                         <option value="Pending" <?php if ($order_status == "Pending") {
-                                                                    echo "selected";
-                                                                } ?>>Pending</option>
+                                            echo "selected";
+                                        } ?>>Pending</option>
                                         <option value="Completed" <?php if ($order_status == "Completed") {
-                                                                        echo "selected";
-                                                                    } ?>>Completed</option>
+                                            echo "selected";
+                                        } ?>>Completed</option>
                                         <option value="On-Hold" <?php if ($order_status == "On-Hold") {
-                                                                    echo "selected";
-                                                                } ?>>On-Hold</option>
+                                            echo "selected";
+                                        } ?>>On-Hold</option>
                                         <option value="Canceled" <?php if ($order_status == "Canceled") {
-                                                                        echo "selected";
-                                                                    } ?>>Canceled</option>
+                                            echo "selected";
+                                        } ?>>Canceled</option>
                                         <option value="Rejected" <?php if ($order_status == "Rejected") {
-                                                                        echo "selected";
-                                                                    } ?>>Rejected</option>
+                                            echo "selected";
+                                        } ?>>Rejected</option>
                                         <option value="Refuded" <?php if ($order_status == "Refuded") {
-                                                                    echo "selected";
-                                                                } ?>>Refuded</option>
+                                            echo "selected";
+                                        } ?>>Refuded</option>
                                     </select>
                                 </div>
                                 <div class="col">
@@ -257,11 +244,11 @@
                         dataType: "html"
                     });
 
-                    request.done(function(msg) {
+                    request.done(function (msg) {
                         alert(msg);
                     });
 
-                    request.fail(function(jqXHR, textStatus) {
+                    request.fail(function (jqXHR, textStatus) {
                         alert(textStatus);
                     });
                 }

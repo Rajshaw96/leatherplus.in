@@ -100,13 +100,13 @@
 
                                         if ($resultcartitems != false) {
                                             while ($cartitems = mysqli_fetch_array($resultcartitems)) {
-                                                $price = $cartitems['prod_price']; // make sure you have prod_price in your table
+                                                $price = $cartitems['prod_saleprice']?$cartitems['prod_saleprice']: $cartitems['prod_regularprice']; // make sure you have prod_price in your table
                                                 $subtotal = $qty * $price;
                                                 ?>
                                                 <tr>
                                                     <td class="product-name-col">
                                                         
-                                                        <?= $cartitems['prod_title'] ?> • <?= $size ?>
+                                                        <?= $cartitems['prod_title']? $cartitems['prod_title']: $cartitems['prod_nick'] ?> • <?= $size ?>
                                                     </td>
                                                     <td><?= $cartitems['prod_sku'] ?></td>
                                                     <td>₹ <?= $price ?></td>
