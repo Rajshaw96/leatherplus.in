@@ -35,7 +35,7 @@ if (isset($_SESSION['admin_id'])) {
 
                         $order_num = $orderdetails['order_num'];
                         $order_date = $orderdetails['order_date'];
-                        $order_details = json_decode($orderdetails['order_details']);
+                        $order_details = json_decode($orderdetails['order_details'], true);
                         $order_status = $orderdetails['order_status'];
                         $order_paystatus = $orderdetails['order_paystatus'];
                         $order_total = $orderdetails['order_total'];

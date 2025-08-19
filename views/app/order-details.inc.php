@@ -20,18 +20,15 @@ if ($res && mysqli_num_rows($res) > 0) {
 if (!empty($order['order_details'])) {
     $decoded = json_decode($order['order_details'], true);
 
-    // Handle both array and object formatted JSON
     if (is_array($decoded)) {
         foreach ($decoded as $item) {
-            if (is_array($item)) {
-                // Format: [prod_id, quantity, unit_price, tax, variation, extra]
-                $order_details[] = [
-                    'prod_id' => $item[0],
-                    'quantity' => $item[1],
-                    'unit_price' => $item[2],
-                    'variation' => $item[4]
-                ];
-            }
+            // Format: {"product_id":238,"name":"RB35-3315","size":"34","qty":1}
+            $order_details[] = [
+                'prod_id' => $item['product_id'],
+                'name' => $item['name'],
+                'size' => $item['size'],
+                'quantity' => $item['qty']
+            ];
         }
     }
 }
@@ -84,6 +81,7 @@ if (!empty($order['order_details'])) {
             margin-top: 155px !important;
             margin-bottom: 30px;
         }
+
         .card img {
             width: 15%;
             object-fit: cover;
@@ -104,13 +102,16 @@ if (!empty($order['order_details'])) {
                     <div class="card-body">
                         <p><strong>Order Date:</strong> <?= date('d-m-Y', strtotime($order_date)) ?></p>
                         <p><strong>Order Number:</strong> <?= htmlspecialchars($order_num) ?></p>
-                        <p><strong>Status:</strong> <span
-                                class="order-status <?= strtolower($order_status) == 'completed' ? 'status-completed' : (strtolower($order_status) == 'failed' ? 'status-failed' : 'status-pending') ?>"><?= ucfirst($order_status) ?></span>
+                        <p><strong>Status:</strong>
+                            <span
+                                class="order-status <?= strtolower($order_status) == 'completed' ? 'status-completed' : (strtolower($order_status) == 'failed' ? 'status-failed' : 'status-pending') ?>">
+                                <?= ucfirst($order_status) ?>
+                            </span>
                         </p>
                         <p><strong>Payment:</strong>
-                            <?= $order_paystatus == 1 ? '<span style="color: #59300e; font-weight: bold;">Paid</span>' 
-                                : ($order_paystatus == 2 ? '<span style="color: #59300e; font-weight: bold;">COD</span>' 
-                                : '<span style="color: #59300e; font-weight: bold;">Failed</span>') ?>
+                            <?= $order_paystatus == 1 ? '<span style="color: #59300e; font-weight: bold;">Paid</span>'
+                                : ($order_paystatus == 2 ? '<span style="color: #59300e; font-weight: bold;">COD</span>'
+                                    : '<span style="color: #59300e; font-weight: bold;">Failed</span>') ?>
                         </p>
                         <hr>
                         <div class="table-responsive">
@@ -119,6 +120,7 @@ if (!empty($order['order_details'])) {
                                     <tr>
                                         <th>Product</th>
                                         <th>Code</th>
+                                        <th>Size</th>
                                         <th>Price</th>
                                         <th>Qty</th>
                                         <th>Subtotal</th>
@@ -128,13 +130,13 @@ if (!empty($order['order_details'])) {
                                     <?php foreach ($order_details as $item):
                                         $prod_id = $item['prod_id'];
                                         $qty = $item['quantity'];
-                                        $unit_price = $item['unit_price'];
-                                        $variation = $item['variation'];
+                                        $size = $item['size'];
 
                                         $res = $database->getData("SELECT * FROM products WHERE prod_id = $prod_id");
                                         if ($res && mysqli_num_rows($res) > 0):
                                             $product = mysqli_fetch_assoc($res);
-                                            $subtotal = $qty * $unit_price;
+                                            $price = $product['prod_saleprice'] ? $product['prod_saleprice'] : $product['prod_regularprice'];  // use price from DB
+                                            $subtotal = $qty * $price;
                                             ?>
                                             <tr>
                                                 <td style="width: 300px;">
@@ -142,13 +144,13 @@ if (!empty($order['order_details'])) {
                                                         <img src="<?= $url->baseUrl('uploads/product-images/' . $product['prod_featuredimage']) ?>"
                                                             alt="product-images" class="me-2">
                                                         <div>
-                                                            <?= htmlspecialchars($product['prod_title']) ?><br>
-                                                            <small><?= htmlspecialchars($variation) ?></small>
+                                                            <?= htmlspecialchars($product['prod_nick']?$product['prod_nick']:$product['prod_title']) ?><br>
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td><?= $product['prod_sku'] ?></td>
-                                                <td>₹ <?= number_format($unit_price, 2) ?></td>
+                                                <td><?= htmlspecialchars($product['prod_sku']) ?></td>
+                                                <td><?= htmlspecialchars($size) ?></td>
+                                                <td>₹ <?= number_format($price, 2) ?></td>
                                                 <td><?= $qty ?></td>
                                                 <td>₹ <?= number_format($subtotal, 2) ?></td>
                                             </tr>
