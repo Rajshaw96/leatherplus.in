@@ -1,6 +1,6 @@
 <head>
   <meta charset="utf-8">
-  <title>About Us - Leather Plus</title>
+  <title>Privacy Policy - Leather Plus</title>
   <meta name="description" content="Login to your Leather Plus Account">
 
   <!--[if IE]> <meta http-equiv="X-UA-Compatible" content="IE=edge"> <![endif]-->

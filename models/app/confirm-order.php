@@ -162,7 +162,7 @@ if (isset($_SESSION['cart'])) {
                 $_SESSION['cart'] = [];
                 $_SESSION['cart_totalamt'] = 0;
                 unset($_SESSION['enabletaxes']);
-                header('location:' . $url->baseUrl('views/app/thank-you?order=' . $order_num));
+                header('location:' . $url->baseUrl('views/app/thank-you.inc.php?order=' . $order_num));
 
             } else {
                 // ✅ Prepaid Orders → Do not call Shipway here
