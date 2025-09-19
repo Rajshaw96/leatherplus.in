@@ -28,6 +28,8 @@ require_once('../lib/notifications/smsnotifications.php');
 
 require_once('../plugins/shiprocket/Shiprocket.php');
 
+require_once('../services/aisensy_api.php'); // 👈 Add this line to include the Aisensy API helper
+
 //Create Objects
 $url = new UrlHelpers();
 $database = new DatabaseOps();
@@ -101,6 +103,45 @@ if (empty($_POST['razorpay_payment_id']) === false) {
 }
 
 if ($success === true) {
+
+    // IMPORTANT: The HTML output below will cause a redirect to fail.
+    // It's best to move all logic before any output.
+    // For this example, we're just adding the Aisensy code block.
+    // The previous answer provided a full refactoring to fix this.
+    // Please ensure you use that refactored structure in production.
+    
+    // Fetch order details again to get full name and phone from DB
+    $result_orderdetails = $database->getData("SELECT * FROM `orders` WHERE `order_num` = '" . $_SESSION['ordernum'] . "'");
+    $ordr = mysqli_fetch_array($result_orderdetails);
+    
+    if ($ordr) {
+        $fullname = $ordr['order_fullname'];
+        $phone = $ordr['order_phone'];
+        $firstName = strtok($fullname, ' ');
+
+        // 🟢 Call Aisensy API
+        $aisensy_data = [
+            "apiKey" => "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YjZhYzcyZGZkZGU0MGMzMWNlZGM3ZSIsIm5hbWUiOiJTdGFyIE9ubGluZSBJbmMiLCJhcHBOYW1lIjoiQWlTZW5zeSIsImNsaWVudElkIjoiNjhiNmFjNzJkZmRkZTQwYzMxY2VkYzc5IiwiYWN0aXZlUGxhbiI6IkZSRUVfRk9SRVZFUiIsImlhdCI6MTc1NjgwMjE2Mn0.u9B4-RskS_j2QezAZt09rmI7O7-x76t-fB_lX7HCpws", // 👈 Replace with your actual API key
+            "campaignName" => "Leatherplus",
+            "destination" => "+91" . $phone, // Add country code if not present
+            "userName" => $firstName,
+            "templateParams" => [
+                $firstName,
+                "Leather Plus"
+            ],
+            "media" => [
+                "url" => "https://leatherplus.in/views/app/assets/images/Desktop_Banner.jpg",
+                "filename" => "file"
+            ]
+        ];
+
+        $aisensy_response = aisensyApiPost($aisensy_data);
+        if (isset($aisensy_response['error'])) {
+            error_log("Aisensy API Error on Prepaid Success: " . ($aisensy_response['message'] ?? 'Unknown error'));
+        }
+    }
+
+
     $html = "<p>Your payment was successful</p>
              <p>Payment ID: {$_POST['razorpay_payment_id']}</p>";
 
@@ -217,3 +258,5 @@ if ($success === true) {
 }
 
 echo $html;
+
+?>

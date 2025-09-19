@@ -9,6 +9,7 @@ require_once('../../lib/config/config.php');
 require_once('../../lib/helpers/urlhelpers.php');
 require_once('../../lib/database/databaseops.php');
 require_once('../../services/shipway_api.php');
+require_once('../../services/aisensy_api.php'); // 👈 Add this line
 
 // Create Objects
 $url = new UrlHelpers();
@@ -25,22 +26,22 @@ if (isset($_SESSION['cart'])) {
     if ($connStatus) {
 
         // Safely get values with fallbacks
-        $fullname       = htmlspecialchars($_POST['fullname'] ?? '');
-        $email      = htmlspecialchars($_POST['email'] ?? '');
-        $phone          = htmlspecialchars($_POST['phone'] ?? '');
-        $company        = htmlspecialchars($_POST['company'] ?? '');
-        $address        = htmlspecialchars($_POST['address'] ?? '');
-        $city           = htmlspecialchars($_POST['city'] ?? '');
-        $postcode       = htmlspecialchars($_POST['pincode'] ?? '');
-        $country        = htmlspecialchars($_POST['country'] ?? '');
-        $region         = htmlspecialchars($_POST['state'] ?? '');
-        $user_id        = intval($_SESSION['user_id'] ?? 0);
-        $cart_total     = floatval($_SESSION['cart_totalamt'] ?? 0);
-        $tax            = floatval($_SESSION['enabletaxes'] ?? 0);
-        $order_num      = $_SESSION['ordernum'];
-        $order_date     = date('Y-m-d');
-        $cart_details   = json_encode($_SESSION['cart']);
-        $payment_mode   = htmlspecialchars($_POST['payment_mode'] ?? 'prepaid');
+        $fullname = htmlspecialchars($_POST['fullname'] ?? '');
+        $email = htmlspecialchars($_POST['email'] ?? '');
+        $phone = htmlspecialchars($_POST['phone'] ?? '');
+        $company = htmlspecialchars($_POST['company'] ?? '');
+        $address = htmlspecialchars($_POST['address'] ?? '');
+        $city = htmlspecialchars($_POST['city'] ?? '');
+        $postcode = htmlspecialchars($_POST['pincode'] ?? '');
+        $country = htmlspecialchars($_POST['country'] ?? '');
+        $region = htmlspecialchars($_POST['state'] ?? '');
+        $user_id = intval($_SESSION['user_id'] ?? 0);
+        $cart_total = floatval($_SESSION['cart_totalamt'] ?? 0);
+        $tax = floatval($_SESSION['enabletaxes'] ?? 0);
+        $order_num = $_SESSION['ordernum'];
+        $order_date = date('Y-m-d');
+        $cart_details = json_encode($_SESSION['cart']);
+        $payment_mode = htmlspecialchars($_POST['payment_mode'] ?? 'prepaid');
 
         // Insert order into DB
         $insertQuery = "INSERT INTO `orders` (
@@ -49,7 +50,7 @@ if (isset($_SESSION['cart'])) {
             `order_company`, `order_address`, `order_city`, `order_postcode`, `order_country`,
             `order_state`, `order_paystatus`
         ) VALUES (
-            '$order_num', '$order_date', '".json_encode($_SESSION['cart'])."', $cart_total, $tax,
+            '$order_num', '$order_date', '" . json_encode($_SESSION['cart']) . "', $cart_total, $tax,
             'Pending', $user_id, '$fullname', '$email', '$phone',
             '$company', '$address', '$city', '$postcode', '$country',
             '$region', 0
@@ -148,9 +149,27 @@ if (isset($_SESSION['cart'])) {
                     'info@leatherplus.in',
                     'y983VSB2Tn34tW3xv0u4687rVk1keKq8'
                 );
+                $aisensy_data = [
+                    "apiKey" => "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YjZhYzcyZGZkZGU0MGMzMWNlZGM3ZSIsIm5hbWUiOiJTdGFyIE9ubGluZSBJbmMiLCJhcHBOYW1lIjoiQWlTZW5zeSIsImNsaWVudElkIjoiNjhiNmFjNzJkZmRkZTQwYzMxY2VkYzc5IiwiYWN0aXZlUGxhbiI6IkZSRUVfRk9SRVZFUiIsImlhdCI6MTc1NjgwMjE2Mn0.u9B4-RskS_j2QezAZt09rmI7O7-x76t-fB_lX7HCpws", // 👈 Replace with your actual API key
+                    "campaignName" => "Leatherplus",
+                    "destination" => "+91" . $phone, // Add country code if not present in $phone
+                    "userName" => $firstName,
+                    "templateParams" => [
+                        $firstName,
+                        "Leather Plus"
+                    ],
+                    "media" => [
+                        "url" => "https://leatherplus.in/views/app/assets/images/Desktop_Banner.jpg",
+                        "filename" => "file"
+                    ]
+                ];
 
+                $aisensy_response = aisensyApiPost($aisensy_data);
                 if (isset($response['error'])) {
                     error_log("Shipway Push Order Error: " . ($response['message'] ?? 'Unknown error'));
+                } else if (isset($aisensy_response['error'])) {
+                    error_log("Aisensy API Error: " . ($aisensy_response['message'] ?? 'Unknown error'));
+
                 } else {
                     $awb = $response['awb'] ?? null;
                     if ($awb) {
