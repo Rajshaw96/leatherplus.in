@@ -252,7 +252,10 @@ if (isset($_SESSION['login_error'])) {
           <input type="checkbox" name="rememberme" value="rememberme" />
           Remember Me
         </label>
-        <!-- <a href="#" class="forgot" style="color:#5c2e0f;">Forgot Password?</a> -->
+        <a href="#" class="forgot" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal" style="color:#5c2e0f;">
+          Forgot Password?
+        </a>
+
       </div>
 
       <button type="submit" class="login-btn">Login</button>
@@ -261,6 +264,28 @@ if (isset($_SESSION['login_error'])) {
           style="color:#5c2e0f;">Create Now</a></p>
     </form>
   </div>
+  <!-- Forgot Password Modal -->
+  <div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form method="POST" action="<?= $url->baseUrl('models/app/forgot-password.php') ?>">
+          <div class="modal-header">
+            <h5 class="modal-title">Forgot Password</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal">X</button>
+          </div>
+          <div class="modal-body">
+            <p>Enter your email address, and we’ll send you a reset link.</p>
+            <input type="email" class="form-control" name="email" required placeholder="Your Email">
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" style="background:#5c2e0f;border:none;">Send Reset
+              Link</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
 
   <div class="right-section">
     <div class="position-fixed top-0 end-0 p-3" style="z-index: 9999;bottom:20px;right:20px;">
@@ -268,8 +293,8 @@ if (isset($_SESSION['login_error'])) {
         aria-live="assertive" aria-atomic="true">
         <div class="d-flex">
           <div class="toast-body" id="toast-body-desktop"></div>
-          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
-            aria-label="Close" style="background: transparent !important;border:none !important;color:white !important;">X</button>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"
+            style="background: transparent !important;border:none !important;color:white !important;">X</button>
         </div>
       </div>
     </div>
@@ -280,8 +305,8 @@ if (isset($_SESSION['login_error'])) {
       aria-live="assertive" aria-atomic="true">
       <div class="d-flex">
         <div class="toast-body" id="toast-body-mobile"></div>
-        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
-          aria-label="Close" style="background: transparent !important;border:none !important;color:white !important;">X</button>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"
+          style="background: transparent !important;border:none !important;color:white !important;">X</button>
       </div>
     </div>
   </div>
